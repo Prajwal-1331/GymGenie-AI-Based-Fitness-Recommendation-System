@@ -6,7 +6,7 @@ import datetime
 import cv2
 import mediapipe as mp
 import pyrebase
-from streamlit_js_eval import get_geolocation
+
 
 st.set_page_config(page_title="Gym AI Pro Max", layout="wide")
 
@@ -71,7 +71,9 @@ def save_progress(data):
 # GET LOCATION (REAL GPS)
 # -------------------------------
 def get_location():
-    loc = get_geolocation()
+    def get_location():
+    # Default user location (Nagpur)
+    return 21.1458, 79.0882
     if loc:
         return loc["coords"]["latitude"], loc["coords"]["longitude"]
     return None, None
@@ -80,27 +82,32 @@ def get_location():
 # GOOGLE MAPS GYM LOCATOR
 # -------------------------------
 def map_feature():
-    st.subheader("🌍 Nearby Gyms (Live Location)")
+    st.subheader("🌍 Nearby Gyms")
 
     lat, lon = get_location()
 
-    if lat:
-        st.success(f"Location: {lat}, {lon}")
+    gyms = pd.DataFrame({
+        "Gym": ["Gold's Gym", "Talwalkars", "Anytime Fitness", "Cult Fit"],
+        "lat": [21.1458, 21.1300, 21.1600, 21.1500],
+        "lon": [79.0882, 79.0800, 79.0900, 79.1000],
+        "Rating": [4.5, 4.2, 4.6, 4.7]
+    })
 
-        # Plotly Map
-        df = pd.DataFrame({
-            "lat": [lat],
-            "lon": [lon],
-            "Place": ["You"]
-        })
+    fig = px.scatter_mapbox(
+        gyms,
+        lat="lat",
+        lon="lon",
+        hover_name="Gym",
+        size="Rating",
+        color="Rating",
+        zoom=12,
+        height=500
+    )
 
-        fig = px.scatter_mapbox(df, lat="lat", lon="lon", zoom=14)
-        fig.update_layout(mapbox_style="open-street-map")
-        st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(mapbox_style="open-street-map")
+    st.plotly_chart(fig, use_container_width=True)
 
-        st.info("👉 Integrate Google Places API for real gyms")
-    else:
-        st.warning("Allow location access")
+    st.success(f"Showing gyms near: {lat}, {lon}")
 
 # -------------------------------
 # SQUAT AI
