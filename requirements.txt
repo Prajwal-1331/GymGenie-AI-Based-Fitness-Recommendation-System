@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+plotly
+opencv-python
+mediapipe
+pyrebase4
+streamlit
+requests
