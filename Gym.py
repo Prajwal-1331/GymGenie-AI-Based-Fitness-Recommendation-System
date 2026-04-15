@@ -72,8 +72,7 @@ def save_progress(data):
 # -------------------------------
 def get_location():
     def get_location():
-    # Default user location (Nagpur)
-    return 21.1458, 79.0882
+        return 21.1458, 79.0882
     if loc:
         return loc["coords"]["latitude"], loc["coords"]["longitude"]
     return None, None
